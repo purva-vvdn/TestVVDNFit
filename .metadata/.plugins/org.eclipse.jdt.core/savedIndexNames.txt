@@ -1,0 +1,8 @@
+INDEX VERSION 1.134+/home/purva/Documents/appium-java/.metadata/.plugins/org.eclipse.jdt.core
+3004826500.index
+3335364004.index
+1705332094.index
+2743851118.index
+2712975149.index
+1865797976.index
+2899393442.index
