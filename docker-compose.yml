@@ -1,62 +1,47 @@
-version: '3'
+version: '3.8'
 services:
+  # appium:
+  #   build: .
+  #   ports:
+  #     - "4723:4723"
+  #   volumes:
+  #     - .:/workspace
+  #   networks:
+  #     - test-network
   appium:
-    build: .
+    image: appium/appium
+    container_name: appium-server
     ports:
       - "4723:4723"
+    environment:
+      - APPIUM_ALLOW_INSECURE=chromedriver_autodownload
     volumes:
-      - .:/workspace
-    networks:
-      - test-network
+      - /dev/bus/usb:/dev/bus/usb # For USB devices (Linux only)
+      - /dev/kvm:/dev/kvm         # For Android emulator (Linux only)
 
-  selenium-hub:
-    image: selenium/hub:3.141.59
-    container_name: selenium-hub
+  android-emulator:
+    image: selenium/node-chrome-debug
+    container_name: android-emulator
+    privileged: true
     ports:
-      - "4444:4444"
-    networks:
-      - test-network
-
-  chrome:
-    image: selenium/node-chrome:3.141.59
-    volumes:
-      - /dev/shm:/dev/shm
+      - "4444:4444" # Selenium Hub
+      - "5900:5900" # VNC Server
     environment:
-      - HUB_HOST=selenium-hub
-      - NODE_MAX_INSTANCES=1
-      - NODE_MAX_SESSION=1
+      - START_XVFB=false
+      - MOBILE_PLATFORM=android
     depends_on:
-      - selenium-hub
-    networks:
-      - test-network
-
-  firefox:
-    image: selenium/node-firefox:3.141.59
+      - appium
+  maven:
+    image: maven:3.8.5-openjdk-11
+    container_name: maven-test-runner
     volumes:
-      - /dev/shm:/dev/shm
-    environment:
-      - HUB_HOST=selenium-hub
-      - NODE_MAX_INSTANCES=1
-      - NODE_MAX_SESSION=1
+      - ./tests:/usr/src/app # Your Maven project should be mounted here
+      - ~/.m2:/root/.m2      # Cache Maven dependencies to speed up builds
+    working_dir: /usr/src/app
     depends_on:
-      - selenium-hub
-    networks:
-      - test-network
-
-  test-runner:
-    image: openjdk:17-jdk-slim
-    volumes:
-      - .:/workspace
-    working_dir: /workspace
-  #   # command: ["sh", "-c", "javac -cp .:lib/* TestScript.java && java -cp .:lib/* TestScript"]
-  #   command: ["sh", "-c", "javac TestScript.java && java TestScript"]
-  # java-app:
-  #   build: .
-  #   container_name: java-hello-world
-  #   depends_on:
-  #     - appium
-  #     - selenium-hub
-
+      - appium
+    command: mvn clean test
+ 
 networks:
   test-network:
     driver: bridge

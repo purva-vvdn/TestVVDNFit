@@ -5,11 +5,12 @@ FROM openjdk:11-jdk-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the Java application to the container
-COPY TestScript.java .
+# # Copy the Java application to the container
+# COPY TestScript.java .
 
-# Compile the Java application
-RUN javac TestScript.java
+# COPY pom.xml .
+COPY . .
 
-# Run the Java application
-CMD ["java", "TestScript"]
+# RUN mvn build
+
+# CMD ["mvn", "test"]
