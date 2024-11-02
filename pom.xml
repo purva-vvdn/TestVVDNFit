@@ -23,12 +23,18 @@
             <version>7.4.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version> <!-- Or the latest available version -->
+            <scope>provided</scope>
+         </dependency>
           <dependency>
-        <groupId>com.aventstack</groupId>
-        <artifactId>extentreports</artifactId>
-        <version>5.0.9</version>
-    </dependency>
-    </dependencies>
+             <groupId>com.aventstack</groupId>
+             <artifactId>extentreports</artifactId>
+              <version>5.0.9</version>
+          </dependency>
+     </dependencies>
    <build>
     <plugins>
         <plugin>
@@ -53,6 +59,6 @@
                 </includes>
             </configuration>
         </plugin>
-    </plugins>
-</build>
+       </plugins>
+   </build>
 </project>
